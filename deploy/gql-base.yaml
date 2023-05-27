@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gql-base
+spec:
+  replicas: 1
+  revisionHistoryLimit: 3
+  selector:
+    matchLabels:
+      app: gql-base
+  template:
+    metadata:
+      labels:
+        app: gql-base
+    spec:
+      containers:
+      - image: 934585871963.dkr.ecr.us-east-1.amazonaws.com/gql-base:v1.0.0
+        name: gql-base
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: 250m
+            memory: 256
