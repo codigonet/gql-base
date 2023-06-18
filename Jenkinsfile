@@ -1,5 +1,7 @@
-stage("Startup"){
-  sh """
-  echo "testing Jenkins..."
-  """
+node("Build"){
+  stage("Startup"){
+    sh '''
+    echo "testing Jenkins..."
+    '''
+  }
 }
