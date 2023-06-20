@@ -26,9 +26,9 @@ spec:
     stages {
         stage('Main') {
             steps {
-                sh 'hostname'
                 sh '''
-                node --version
+                npm i --no-audit
+                npm run compile
                 '''
             }
         }
