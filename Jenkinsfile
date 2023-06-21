@@ -31,11 +31,11 @@ pipeline {
                     string(credentialsId: 'ECR_HOST', variable: 'ECR_GQL_HOST')
                 ]) {
                     step {
-                        def GQL_IMAGE_NAME = "${ECR_GQL_HOST}/gql-base:${env.TAG_NAME}-${env.BUILD_NUMBER}"
+                        GQL_IMAGE_NAME = "${ECR_GQL_HOST}/gql-base:${env.TAG_NAME}-${env.BUILD_NUMBER}"
                         sh '''
                         echo $ECR_GQL_HOST
                         '''
-                        def gqlImage = docker.build(GQL_IMAGE_NAME)
+                        gqlImage = docker.build(GQL_IMAGE_NAME)
                     }
 
                     step {
@@ -61,7 +61,7 @@ pipeline {
                 string(credentialsId: 'DOMAIN_HOST', variable: 'DOMAIN_GQL_HOST')
             ]) {
                 step {
-                    def GQL_DOMAIN = "gql-base.${DOMAIN_GQL_HOST}"
+                    GQL_DOMAIN = "gql-base.${DOMAIN_GQL_HOST}"
                 }
 
                 step {
