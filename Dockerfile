@@ -1,7 +1,7 @@
 FROM node:18-alpine
 
 WORKDIR /app
-COPY . .
+COPY ./dist .
 
 RUN npm i --no-fund
 CMD npm start
