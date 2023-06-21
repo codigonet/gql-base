@@ -31,7 +31,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([
-                        string(credentialsId: 'stage/ECR_HOST', variable: 'ECR_GQL_HOST')
+                        string(credentialsId: 'ECR_HOST', variable: 'ECR_GQL_HOST')
                     ]) {
                         GQL_IMAGE_NAME = "${ECR_GQL_HOST}/gql-base:${env.TAG_NAME}-${env.BUILD_NUMBER}"
                         sh '''
@@ -56,8 +56,8 @@ pipeline {
             steps {
                 script {
                     withCredentials([
-                        string(credentialsId: 'stage/ACM_ARN', variable: 'ACM_GQL_ARN'),
-                        string(credentialsId: 'stage/DOMAIN_HOST', variable: 'DOMAIN_GQL_HOST')
+                        string(credentialsId: 'ACM_ARN', variable: 'ACM_GQL_ARN'),
+                        string(credentialsId: 'DOMAIN_HOST', variable: 'DOMAIN_GQL_HOST')
                     ]) {
                             GQL_DOMAIN = "gql-base.${DOMAIN_GQL_HOST}"
     
