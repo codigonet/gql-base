@@ -44,8 +44,7 @@ pipeline {
                         }
                     }
                 }
-            }  
-            steps {
+
                 script {
                     sh '''
                     Imagen generada [$GQL_IMAGE_NAME]
