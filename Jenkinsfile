@@ -30,22 +30,29 @@ pipeline {
                 withCredentials([
                     string(credentialsId: 'ECR_HOST', variable: 'ECR_GQL_HOST')
                 ]) {
-                    def GQL_IMAGE_NAME = "${ECR_GQL_HOST}/gql-base:${env.TAG_NAME}-${env.BUILD_NUMBER}"
-                    sh '''
-                    echo $ECR_GQL_HOST
-                    '''
-                    def gqlImage = docker.build(GQL_IMAGE_NAME)
+                    step {
+                        def GQL_IMAGE_NAME = "${ECR_GQL_HOST}/gql-base:${env.TAG_NAME}-${env.BUILD_NUMBER}"
+                        sh '''
+                        echo $ECR_GQL_HOST
+                        '''
+                        def gqlImage = docker.build(GQL_IMAGE_NAME)
+                    }
+
+                    step {
                     
-                    docker.withRegistry("https://${ECR_GQL_HOST}") {
-                        gqlImage.push()
+                        docker.withRegistry("https://${ECR_GQL_HOST}") {
+                            gqlImage.push()
+                        }
                     }
                     
                 }
             }  
             steps {
-                sh '''
-                Imagen generada [$GQL_IMAGE_NAME]
-                '''
+                step {
+                    sh '''
+                    Imagen generada [$GQL_IMAGE_NAME]
+                    '''
+                }
             }
         }
         stage('Deploy') {
@@ -53,10 +60,11 @@ pipeline {
                 string(credentialsId: 'ACM_ARN', variable: 'ACM_GQL_ARN'),
                 string(credentialsId: 'DOMAIN_HOST', variable: 'DOMAIN_GQL_HOST')
             ]) {
+                step {
+                    def GQL_DOMAIN = "gql-base.${DOMAIN_GQL_HOST}"
+                }
 
-                def GQL_DOMAIN = "gql-base.${DOMAIN_GQL_HOST}"
-
-                steps {
+                step {
                     sh '''
                     echo "Image: $gqlImageName"
                     echo "Domain: $DOMAIN_GQL_HOST"
@@ -79,7 +87,7 @@ pipeline {
                 serverUrl: 'https://kubernetes.default',
                 namespace: 'demo-apis'
             ]) {
-                steps {
+                step {
                     echo "Deploy Modificado"
                     cat 'deploy/gql-base.yaml'
                 }
