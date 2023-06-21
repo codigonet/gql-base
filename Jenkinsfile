@@ -18,11 +18,13 @@ pipeline {
     }
     stages {
         stage('Compile') {
-            script {
-                sh '''
-                npm i --no-fund
-                npm run compile
-                '''
+            steps {
+                script {
+                    sh '''
+                    npm i --no-fund
+                    npm run compile
+                    '''
+                }
             }
         }
         stage('Build') {
@@ -52,36 +54,40 @@ pipeline {
             }
         }
         stage('Deploy') {
-            script {
-                withCredentials([
-                    string(credentialsId: 'ACM_ARN', variable: 'ACM_GQL_ARN'),
-                    string(credentialsId: 'DOMAIN_HOST', variable: 'DOMAIN_GQL_HOST')
-                ]) {
-                        GQL_DOMAIN = "gql-base.${DOMAIN_GQL_HOST}"
-
-                        sh '''
-                        echo "Image: $gqlImageName"
-                        echo "Domain: $DOMAIN_GQL_HOST"
+            steps {
+                script {
+                    withCredentials([
+                        string(credentialsId: 'ACM_ARN', variable: 'ACM_GQL_ARN'),
+                        string(credentialsId: 'DOMAIN_HOST', variable: 'DOMAIN_GQL_HOST')
+                    ]) {
+                            GQL_DOMAIN = "gql-base.${DOMAIN_GQL_HOST}"
     
-                        sed -i -e '/image: /s|GQL_BASE_IMAGE|${GQL_IMAGE_NAME}|g' deploy/gql-base.yaml
-                        '''                    
-                }
+                            sh '''
+                            echo "Image: $gqlImageName"
+                            echo "Domain: $DOMAIN_GQL_HOST"
+        
+                            sed -i -e '/image: /s|GQL_BASE_IMAGE|${GQL_IMAGE_NAME}|g' deploy/gql-base.yaml
+                            '''                    
+                    }
+                }            
             }            
         }
 
         stage('Kube Apply') {
-            script {
-                // withKubeConfig([
-                //     credentialsId: K8S_CREDENTIALS_NAME, 
-                //     serverUrl: K8S_SERVER_URL,
-                //     namespace: K8S_NAMESPACE
-                // ]) {
-                withKubeConfig([
-                    serverUrl: 'https://kubernetes.default',
-                    namespace: 'demo-apis'
-                ]) {
-                    echo "Deploy Modificado"
-                    cat 'deploy/gql-base.yaml'
+            steps {
+                script {
+                    // withKubeConfig([
+                    //     credentialsId: K8S_CREDENTIALS_NAME, 
+                    //     serverUrl: K8S_SERVER_URL,
+                    //     namespace: K8S_NAMESPACE
+                    // ]) {
+                    withKubeConfig([
+                        serverUrl: 'https://kubernetes.default',
+                        namespace: 'demo-apis'
+                    ]) {
+                        echo "Deploy Modificado"
+                        cat 'deploy/gql-base.yaml'
+                    }
                 }
             }
         }
