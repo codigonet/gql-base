@@ -31,7 +31,7 @@ pipeline {
             steps {
                 script {
                     withCredentials([
-                        string(credentialsId: 'ECR_HOST', variable: 'ECR_GQL_HOST')
+                        string(credentialsId: 'stage-ECR_HOST', variable: 'ECR_GQL_HOST')
                     ]) {
                         GQL_IMAGE_NAME = "${ECR_GQL_HOST}/gql-base:${env.TAG_NAME}-${env.BUILD_NUMBER}"
                         sh '''
